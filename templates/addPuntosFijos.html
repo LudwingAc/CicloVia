@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% load static %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Corredores</title>
+  </head>
+  <style>
+      img{
+          height: 100px;
+          width: 100px;
+          object-fit: contain;
+          object-position: top 75%;
+      }
+      .my-auto{
+          padding-top: 2% !important;
+      }
+
+  </style>
+  <body>
+  <link rel="stylesheet" type="text/css" href="/Content/font-awesome/css/font-awesome.min.css" />
+
+
+    <button id="exportButton" class="btn btn-lg btn-danger clearfix"><span class="fa fa-file-pdf-o"></span> Export to PDF</button>
+    <h1>Reporte de Corredores</h1>
+    <br><br><br>
+
+    <table class="table table-striped" id="exportTable" class="table table-hover">
+  <thead>
+  <tr>
+      <th scope="col" class="text-center" colspan="9">UNIDADES DE APOYO PUNTO FIJO POLICIA NACIONAL</th>
+  </tr>
+    <tr>
+      <th scope="col" class="text-center" colspan="3">FECHA: {{ now }}</th>
+      <th scope="col" class="text-center" colspan="3">CORREDOR: {{ corredor.0.1 }}</th>
+      <th scope="col" class="text-center" colspan="3">REPONSABLE DE CORREDOR: {{ corredor.0.3 }} {{ corredor.0.4 }}</th>
+  </tr>
+    <tr>
+      <th scope="col" class="text-center" colspan="9">DIRECCION EN LA QUE OCURRE EL EVENTO O ACTIVACIÓN: {{ corredor.0.5 }}</th>
+  </tr>
+    <tr>
+        <th scope="col" class="text-center">No</th>
+      <th scope="col" class="text-center">INSTITUCION O ALIANZA </th>
+      <th scope="col" class="text-center">LUGAR DE UBICACIÓN</th>
+      <th scope="col" class="text-center">NOMBRE DEL APOYO</th>
+      <th scope="col" class="text-center">HORA DE LLEGADA</th>
+      <th scope="col" class="text-center">HORA DE RETIRO</th>
+      <th scope="col" class="text-center">NUMERAL DE LA UNIDAD </th>
+      <th scope="col" class="text-center">NOVEDADES PRESENTADAS </th>
+      <th scope="col" class="text-center">REGISTRO FOTOGRÁFICO</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for corredor in data %}
+    <tr>
+      <th scope="row my-auto">{{ forloop.counter }}</th>
+      <td class="my-auto text-center">{{ corredor.0 }}</td>
+      <td class="my-auto text-center">{{ corredor.1 }}</td>
+      <td class="my-auto text-center">{{ corredor.2 }}</td>
+      <td class="my-auto text-center">{{ corredor.3 }}</td>
+      <td class="my-auto text-center">{{ corredor.4 }}</td>
+      <td class="my-auto text-center">{{ corredor.5 }}</td>
+      <td class="my-auto text-center">{{ corredor.6 }}</td>
+      <td class=""><img  class="rounded mx-auto d-block" alt="..." src='/static/{{ corredor.7 }}'></td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<!-- you need to include the shieldui css and js assets in order for the components to work -->
+<link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jszip.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#exportButton").click(function () {
+            // parse the HTML table element having an id=exportTable
+            var dataSource = shield.DataSource.create({
+                data: "#exportTable",
+                schema: {
+                    type: "table",
+                    fields: {
+                        Name: { type: String },
+                        Age: { type: Number },
+                        Email: { type: String }
+                    }
+                }
+            });
+
+            // when parsing is done, export the data to PDF
+            dataSource.read().then(function (data) {
+                var pdf = new shield.exp.PDFDocument({
+                    author: "PrepBootstrap",
+                    created: new Date()
+                });
+
+                pdf.addPage("a4", "portrait");
+
+                pdf.table(
+                    50,
+                    50,
+                    data,
+                    [
+                        { field: "Name", title: "Person Name", width: 200 },
+                        { field: "Age", title: "Age", width: 50 },
+                        { field: "Email", title: "Email Address", width: 200 }
+                    ],
+                    {
+                        margins: {
+                            top: 50,
+                            left: 50
+                        }
+                    }
+                );
+
+                pdf.saveAs({
+                    fileName: "PrepBootstrapPDF"
+                });
+            });
+        });
+    });
+</script>
+
+<style>
+    #exportButton {
+        border-radius: 0;
+    }
+</style>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
